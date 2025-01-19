@@ -1,10 +1,22 @@
+"use client";
+
 import React from "react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { usePaginatedQuery } from "convex/react";
+import { useMutation, usePaginatedQuery } from "convex/react";
 
 import { capitalizeFirstLetter } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+
+interface Feedback {
+  _id: Id<"feedback">;
+  from: string;
+  type: string;
+  content: string;
+  status: string;
+  _creationTime: number;
+}
 
 export default function FeedbackTable({
   communityId,
@@ -13,15 +25,53 @@ export default function FeedbackTable({
   communityId: Id<"community">;
   isDashboard?: boolean;
 }) {
+  const [loading, setLoading] = React.useState(false);
+  const { toast } = useToast();
+  const updateFeedbackStatus = useMutation(api.feedback.updateStatus);
   const { results, status, loadMore } = usePaginatedQuery(
     api.feedback.list,
 
     {
       communityId: communityId,
     },
-    { initialNumItems: 10 }
+    { initialNumItems: 10 },
   );
   console.log("Feedback for a community", results);
+
+  const handleUpdateFeedbackStatus = async (
+    feedback: Feedback,
+  ): Promise<void> => {
+    setLoading(true);
+    try {
+      const result = await updateFeedbackStatus({
+        id: feedback._id,
+        status: feedback.status === "resolved" ? "pending" : "resolved",
+      });
+      if (result === "updated") {
+        setLoading(false);
+        toast({
+          title: "Feedback updated",
+          description: "Feedback has been updated",
+        });
+      } else {
+        setLoading(false);
+        toast({
+          variant: "destructive",
+          title: "Feedback update failed",
+          description: "Failed to update feedback",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Feedback update failed",
+        description: "Failed to update feedback",
+      });
+    }
+  };
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       {isDashboard && isDashboard == true && (
@@ -71,8 +121,12 @@ export default function FeedbackTable({
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Upvotes
+                      Date
                     </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    ></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
@@ -107,10 +161,19 @@ export default function FeedbackTable({
                         {feedback.content}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {capitalizeFirstLetter(feedback.status)}
+                        {feedback.status === "pending" && (
+                          <span className="font-medium italic text-amber-800">
+                            {capitalizeFirstLetter(feedback.status)}
+                          </span>
+                        )}
+                        {feedback.status === "resolved" && (
+                          <span className="font-medium italic text-green-800">
+                            {capitalizeFirstLetter(feedback.status)}
+                          </span>
+                        )}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {feedback.upvotes}
+                        {new Date(feedback._creationTime).toLocaleDateString()}
                       </td>
                       {isDashboard && isDashboard == true && (
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
@@ -128,10 +191,15 @@ export default function FeedbackTable({
                       {!isDashboard && (
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                           <Button
+                            disabled={loading}
                             variant={"ghost"}
+                            onClick={() => handleUpdateFeedbackStatus(feedback)}
                             className="text-indigo-600 hover:text-indigo-900"
                           >
-                            Upvote
+                            Mark as{" "}
+                            {feedback.status === "resolved"
+                              ? "pending"
+                              : "resolved"}
                           </Button>
                         </td>
                       )}

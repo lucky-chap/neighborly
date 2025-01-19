@@ -14,7 +14,7 @@ export const list = query({
     const feedback = await ctx.db
       .query("feedback")
       .withIndex("communityId", (q) =>
-        q.eq("communityId", args.communityId as Id<"community">)
+        q.eq("communityId", args.communityId as Id<"community">),
       )
       .filter((q) => q.eq(q.field("communityId"), args.communityId))
       .order("desc")
@@ -32,10 +32,23 @@ export const create = mutation({
     type: v.string(),
     content: v.string(),
     status: v.string(),
-    upvotes: v.number(),
   },
   handler: async (ctx, args) => {
     const feedback = await ctx.db.insert("feedback", args);
     return feedback;
+  },
+});
+
+// update feedback status
+export const updateStatus = mutation({
+  args: {
+    id: v.id("feedback"),
+    status: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.id, {
+      status: args.status,
+    });
+    return "updated";
   },
 });

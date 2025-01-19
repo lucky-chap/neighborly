@@ -34,7 +34,6 @@ export default defineSchema({
     type: v.string(), // issue, idea, compliment, other
     content: v.string(),
     status: v.string(), // pending or resloved
-    upvotes: v.number(),
   })
     .index("communityId", ["communityId"])
     .index("status", ["status"]),

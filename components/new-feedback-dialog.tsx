@@ -54,7 +54,6 @@ export function NewFeedbackDialog() {
         type,
         content,
         status: "pending",
-        upvotes: 1,
       });
       if (feedbackId != null) {
         setLoading(false);
