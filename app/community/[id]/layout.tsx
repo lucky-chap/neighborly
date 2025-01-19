@@ -57,13 +57,15 @@ export default function CommunityLayoutPage({
                   {community.name}
                 </h1>
               </div>
-              <Button
-                size={"sm"}
-                type="button"
-                className="block rounded-md bg-indigo-600 px-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Log in
-              </Button>
+              <Link href={"/dashboard"}>
+                <Button
+                  size={"sm"}
+                  type="button"
+                  className="block rounded-md bg-indigo-600 px-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Dashboard
+                </Button>
+              </Link>
             </div>
           </>
         )}

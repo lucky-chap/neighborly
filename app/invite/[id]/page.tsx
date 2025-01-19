@@ -12,7 +12,7 @@ import {
   useMutation,
   useQuery,
 } from "convex/react";
-import { Loader2 } from "lucide-react";
+import { Loader2, User } from "lucide-react";
 
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -108,11 +108,12 @@ export default function InvitePage() {
               </Link>
             )} */}
 
-            {member === null ? (
+            {member === null || member?.email !== currentUser?.email ? (
               <div className="flex w-full flex-col">
                 <div className="mb-2 flex flex-col items-start">
                   <Label className="mb-1">Occupation</Label>
                   <Input
+                    disabled={community.leader === currentUser?._id}
                     value={occupation}
                     onChange={(e) => setOccupation(e.target.value)}
                   />
@@ -126,6 +127,17 @@ export default function InvitePage() {
                 >
                   {loading ? "Adding you to the community..." : "Accept invite"}
                 </Button>
+
+                {community.leader === currentUser?._id && (
+                  <Link
+                    href={`/community/${community?._id}`}
+                    className="w-full"
+                  >
+                    <Button className="mt-5 w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      Visit community
+                    </Button>
+                  </Link>
+                )}
               </div>
             ) : (
               <Link href={`/community/${community?._id}`} className="w-full">

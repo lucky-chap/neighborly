@@ -26,8 +26,13 @@ export default function Dashboard() {
     userId: user?._id as Id<"users">,
   });
 
-  // console.log("Current user: ", user);
+  const member = useQuery(api.member.check, {
+    email: user?.email as string,
+  });
+
   console.log("User's community", community);
+
+  console.log("Is user a member of any community", member);
 
   // const { results, status, loadMore } = usePaginatedQuery(
   //   api.member.list,
@@ -46,7 +51,7 @@ export default function Dashboard() {
         </div>
       ) : (
         <>
-          {community.length === 0 ? (
+          {member === null && community.length === 0 && (
             <div className="grid min-h-[60vh] w-full place-content-center">
               <EmptyState
                 title="No Community Created"
@@ -60,7 +65,35 @@ export default function Dashboard() {
                 trigger={<CreateCommunityDialog />}
               />
             </div>
-          ) : (
+          )}
+
+          {community.length === 0 && member !== null && (
+            <div className="grid min-h-[60vh] w-full place-content-center">
+              <EmptyState
+                title="View community"
+                description="View the community you are a member of"
+                icons={[FileText, LinkIcon, Files]}
+                className="w-full"
+                // action={{
+                //   label: "Create new community",
+                //   onClick: () => console.log("Create community clicked"),
+                // }}
+                trigger={
+                  <Link
+                    href={`/community/${member?.communityId}`}
+                    className="mt-2 w-full"
+                  >
+                    <Button variant={"outline"} className="mt-2 w-full">
+                      View Community
+                      <ArrowUpRight className="ml-2 h-7 w-7" />
+                    </Button>
+                  </Link>
+                }
+              />
+            </div>
+          )}
+
+          {community.length > 0 && (
             <div className="mx-auto my-20 max-w-6xl">
               <div className="mb-20 px-9">
                 <Link href={`/community/${community[0]._id}`}>
@@ -75,7 +108,6 @@ export default function Dashboard() {
                   // members={results}
                   isDashboard={true}
                   communityId={community[0]._id}
-                  communityName={community[0].name}
                 />
               </div>
               <div className="mb-20">

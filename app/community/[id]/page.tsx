@@ -28,6 +28,9 @@ export default function AboutCommunityPage() {
     email: user?.email as string,
     communityId: communityId as Id<"community">,
   });
+  const currentCommunity = useQuery(api.community.findOne, {
+    id: communityId as Id<"community">,
+  });
 
   return (
     <div className="mb-20">
@@ -36,13 +39,15 @@ export default function AboutCommunityPage() {
           <Loader2 className="animate-spin" />
         </div>
       )}
-      {member == null && member !== undefined ? (
+      {member == null &&
+      member !== undefined &&
+      user?._id !== currentCommunity?.leader ? (
         <div className="grid min-h-[60vh] place-content-center">
           <p>Only members of this community can view this page</p>
         </div>
       ) : (
         <MembersTable
-          communityId={member?.communityId as Id<"community">}
+          communityId={communityId as Id<"community">}
           // communityName={"member"}
         />
       )}

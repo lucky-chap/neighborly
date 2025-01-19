@@ -35,14 +35,17 @@ export default function CommunityFeedbackPage() {
           <Loader2 className="animate-spin" />
         </div>
       )}
-      {member == null && member !== undefined ? (
+      {member == null &&
+      member !== undefined &&
+      user?._id !== community?.leader ? (
         <div className="grid min-h-[60vh] place-content-center">
           <p>Only members of this community can view this page</p>
         </div>
       ) : (
         <div className="">
-          {user?._id !== community?.leader && <NewFeedbackDialog />}
-          <FeedbackTable communityId={member?.communityId as Id<"community">} />
+          {/* {user?._id !== community?.leader && <NewFeedbackDialog />} */}
+          <NewFeedbackDialog />
+          <FeedbackTable communityId={communityId as Id<"community">} />
         </div>
       )}
     </div>

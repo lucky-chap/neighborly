@@ -4,6 +4,20 @@ import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 
+// check if a user is a member of any community at all
+export const check = query({
+  args: {
+    email: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const member = await ctx.db
+      .query("member")
+      .filter((q) => q.eq(q.field("email"), args.email))
+      .unique();
+    return member;
+  },
+});
+
 // find members in a community
 export const list = query({
   args: {
