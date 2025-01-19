@@ -98,7 +98,7 @@ export default function Dashboard() {
               <div className="mb-20 px-9">
                 <Link href={`/community/${community[0]._id}`}>
                   <Button>
-                    View Community
+                    My Community
                     <ArrowUpRight className="ml-2 h-7 w-7" />
                   </Button>
                 </Link>
