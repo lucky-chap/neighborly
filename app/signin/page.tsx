@@ -1,23 +1,24 @@
 "use client";
 
-import { SignInMethodDivider } from "@/components/SignInMethodDivider";
+import { useState } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthActions } from "@convex-dev/auth/react";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { SignInMethodDivider } from "@/components/SignInMethodDivider";
 
 export default function SignInPage() {
   const [step, setStep] = useState<"signIn" | "linkSent">("signIn");
 
   return (
-    <div className="flex min-h-screen w-full container my-auto mx-auto">
-      <div className="max-w-[384px] mx-auto flex flex-col my-auto gap-4 pb-8">
+    <div className="container mx-auto my-auto flex min-h-screen w-full">
+      <div className="mx-auto my-auto flex max-w-[384px] flex-col gap-4 pb-8">
         {step === "signIn" ? (
           <>
-            <h2 className="font-semibold text-2xl tracking-tight">
+            <h2 className="text-2xl font-semibold tracking-tight">
               Sign in or create an account
             </h2>
             <SignInWithGitHub />
@@ -26,12 +27,12 @@ export default function SignInPage() {
           </>
         ) : (
           <>
-            <h2 className="font-semibold text-2xl tracking-tight">
+            <h2 className="text-2xl font-semibold tracking-tight">
               Check your email
             </h2>
             <p>A sign-in link has been sent to your email address.</p>
             <Button
-              className="p-0 self-start"
+              className="self-start p-0"
               variant="link"
               onClick={() => setStep("signIn")}
             >
@@ -51,7 +52,7 @@ function SignInWithGitHub() {
       className="flex-1"
       variant="outline"
       type="button"
-      onClick={() => void signIn("github", { redirectTo: "/product" })}
+      onClick={() => void signIn("github", { redirectTo: "/dashboard" })}
     >
       <GitHubLogoIcon className="mr-2 h-4 w-4" /> GitHub
     </Button>
@@ -71,7 +72,7 @@ function SignInWithMagicLink({
       onSubmit={(event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        formData.set("redirectTo", "/product");
+        formData.set("redirectTo", "/dashboard");
         signIn("resend", formData)
           .then(handleLinkSent)
           .catch((error) => {
