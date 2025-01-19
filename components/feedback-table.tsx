@@ -3,7 +3,7 @@
 import React from "react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useMutation, usePaginatedQuery } from "convex/react";
+import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +27,11 @@ export default function FeedbackTable({
 }) {
   const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
+
+  const currentUser = useQuery(api.users.viewer);
+  const community = useQuery(api.community.findOne, {
+    id: communityId,
+  });
   const updateFeedbackStatus = useMutation(api.feedback.updateStatus);
   const { results, status, loadMore } = usePaginatedQuery(
     api.feedback.list,
@@ -34,12 +39,13 @@ export default function FeedbackTable({
     {
       communityId: communityId,
     },
-    { initialNumItems: 10 },
+    { initialNumItems: 10 }
   );
   console.log("Feedback for a community", results);
+  console.log("Community feedback for is", community);
 
   const handleUpdateFeedbackStatus = async (
-    feedback: Feedback,
+    feedback: Feedback
   ): Promise<void> => {
     setLoading(true);
     try {
@@ -175,34 +181,28 @@ export default function FeedbackTable({
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {new Date(feedback._creationTime).toLocaleDateString()}
                       </td>
-                      {isDashboard && isDashboard == true && (
-                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                          <Button
-                            variant={"ghost"}
-                            className="text-indigo-600 hover:text-indigo-900"
-                          >
-                            View
-                            <span className="sr-only">
-                              , {feedback.content}
-                            </span>
-                          </Button>
-                        </td>
-                      )}
-                      {!isDashboard && (
-                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                          <Button
-                            disabled={loading}
-                            variant={"ghost"}
-                            onClick={() => handleUpdateFeedbackStatus(feedback)}
-                            className="text-indigo-600 hover:text-indigo-900"
-                          >
-                            Mark as{" "}
-                            {feedback.status === "resolved"
-                              ? "pending"
-                              : "resolved"}
-                          </Button>
-                        </td>
-                      )}
+
+                      {isDashboard &&
+                        isDashboard == true &&
+                        community !== undefined &&
+                        community !== null &&
+                        community.leader === currentUser?._id && (
+                          <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                            <Button
+                              disabled={loading}
+                              variant={"ghost"}
+                              onClick={() =>
+                                handleUpdateFeedbackStatus(feedback)
+                              }
+                              className="text-indigo-600 hover:text-indigo-900"
+                            >
+                              Mark as{" "}
+                              {feedback.status === "resolved"
+                                ? "pending"
+                                : "resolved"}
+                            </Button>
+                          </td>
+                        )}
                     </tr>
                   ))}
                 </tbody>

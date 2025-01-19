@@ -5,6 +5,10 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
+import { SignInMethodDivider } from "@/components/SignInMethodDivider";
 
 export default function SignInPage() {
   const [step, setStep] = useState<"signIn" | "linkSent">("signIn");
@@ -18,6 +22,8 @@ export default function SignInPage() {
               Sign in or create an account
             </h2>
             <SignInWithGitHub />
+            <SignInMethodDivider />
+            <SignInWithMagicLink handleLinkSent={() => setStep("linkSent")} />
           </>
         ) : (
           <>
@@ -50,5 +56,38 @@ function SignInWithGitHub() {
     >
       <GitHubLogoIcon className="mr-2 h-4 w-4" /> GitHub
     </Button>
+  );
+}
+
+function SignInWithMagicLink({
+  handleLinkSent,
+}: {
+  handleLinkSent: () => void;
+}) {
+  const { signIn } = useAuthActions();
+  const { toast } = useToast();
+  return (
+    <form
+      className="flex flex-col"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        formData.set("redirectTo", "/dashboard");
+        signIn("resend", formData)
+          .then(handleLinkSent)
+          .catch((error) => {
+            console.error(error);
+            toast({
+              title: "Could not send sign-in link",
+              variant: "destructive",
+            });
+          });
+      }}
+    >
+      <label htmlFor="email">Email</label>
+      <Input name="email" id="email" className="mb-4" autoComplete="email" />
+      <Button type="submit">Send sign-in link</Button>
+      <Toaster />
+    </form>
   );
 }
