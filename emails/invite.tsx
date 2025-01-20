@@ -62,6 +62,12 @@ export const InviteUserEmail = ({
               community on <strong>Neighborly</strong>.
             </Text>
 
+            <Text className="text-[14px] leading-[24px] text-black">
+              You need to log in before you can join the community. If you don't
+              have an account, you can create one for free.
+              <strong>Click the link below after logging in</strong>
+            </Text>
+
             <Section className="mb-[32px] mt-[32px] text-center">
               <Button
                 className="rounded bg-blue-500 px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
