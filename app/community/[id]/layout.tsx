@@ -23,13 +23,13 @@ export default function CommunityLayoutPage({
   const user = useQuery(api.users.viewer);
   const pathname = usePathname();
   const communityId = pathname.split("/")[2];
-  console.log("Community ID: ", communityId);
+  // console.log("Community ID: ", communityId);
   const router = useRouter();
   const community = useQuery(api.community.findOne, {
     id: communityId as Id<"community">,
   });
 
-  console.log("Community data: ", community);
+  // console.log("Community data: ", community);
 
   return (
     <section className="p-4">

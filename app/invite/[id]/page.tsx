@@ -81,7 +81,7 @@ export default function InvitePage() {
     }
   };
 
-  console.log("Is user a member?: ", member);
+  // console.log("Is user a member?: ", member);
 
   return (
     <div className="grid min-h-screen place-content-center">

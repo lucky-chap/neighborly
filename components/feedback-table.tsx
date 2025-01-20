@@ -39,13 +39,13 @@ export default function FeedbackTable({
     {
       communityId: communityId,
     },
-    { initialNumItems: 10 }
+    { initialNumItems: 50 },
   );
-  console.log("Feedback for a community", results);
-  console.log("Community feedback for is", community);
+  // console.log("Feedback for a community", results);
+  // console.log("Community feedback for is", community);
 
   const handleUpdateFeedbackStatus = async (
-    feedback: Feedback
+    feedback: Feedback,
   ): Promise<void> => {
     setLoading(true);
     try {
@@ -218,14 +218,22 @@ export default function FeedbackTable({
       </div>
       <div className="mt-5 flex items-center justify-end">
         <Button
-          disabled={results == undefined || results.length == 0}
+          disabled={
+            results == undefined ||
+            results.length == 0 ||
+            status === "Exhausted"
+          }
           variant={"outline"}
           className="mr-2 block rounded-md px-3 py-2 text-center text-sm shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Previous
         </Button>
         <Button
-          disabled={results == undefined || results.length == 0}
+          disabled={
+            results == undefined ||
+            results.length == 0 ||
+            status === "Exhausted"
+          }
           variant={"outline"}
           className="block rounded-md px-3 py-2 text-center text-sm shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >

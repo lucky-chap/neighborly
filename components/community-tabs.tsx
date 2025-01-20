@@ -32,7 +32,7 @@ export default function CommunityTabs() {
     //   current: currentPath === "events" ? true : false,
     // },
   ];
-  console.log("Current path: ", currentPath);
+  // console.log("Current path: ", currentPath);
   return (
     <div>
       <div className="sm:hidden">

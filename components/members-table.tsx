@@ -41,9 +41,9 @@ export default function MembersTable({
     {
       communityId,
     },
-    { initialNumItems: 10 }
+    { initialNumItems: 50 },
   );
-  console.log("Members in community", results);
+  // console.log("Members in community", results);
 
   const community = useQuery(api.community.findOne, {
     id: communityId,
@@ -148,14 +148,22 @@ export default function MembersTable({
       </div>
       <div className="mt-5 flex items-center justify-end">
         <Button
-          disabled={results == undefined || results.length == 0}
+          disabled={
+            results == undefined ||
+            results.length == 0 ||
+            status === "Exhausted"
+          }
           variant={"outline"}
           className="mr-2 block rounded-md px-3 py-2 text-center text-sm shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Previous
         </Button>
         <Button
-          disabled={results == undefined || results.length == 0}
+          disabled={
+            results == undefined ||
+            results.length == 0 ||
+            status === "Exhausted"
+          }
           variant={"outline"}
           className="block rounded-md px-3 py-2 text-center text-sm shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >

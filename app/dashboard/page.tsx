@@ -30,9 +30,9 @@ export default function Dashboard() {
     email: user?.email as string,
   });
 
-  console.log("User's community", community);
+  // console.log("User's community", community);
 
-  console.log("Is user a member of any community", member);
+  // console.log("Is user a member of any community", member);
 
   // const { results, status, loadMore } = usePaginatedQuery(
   //   api.member.list,
